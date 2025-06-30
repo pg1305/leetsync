@@ -1,7 +1,7 @@
 class Solution {
 public:
     vector<int> generateRow(int row) {
-    long long ans = 1;
+    int ans = 1;
     vector<int> ansRow;
     ansRow.push_back(1); 
     for (int col = 1; col < row; col++) {
