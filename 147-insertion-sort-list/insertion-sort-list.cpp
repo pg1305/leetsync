@@ -11,24 +11,23 @@
 class Solution {
 public:
     ListNode* insertionSortList(ListNode* head) {
-        if(!head || !head -> next){
-            return head;
-        }
-        ListNode dummy(0);
-        ListNode* curr = head;
-        while(curr){
-            ListNode* prev = &dummy;
-            while(prev -> next && prev -> next -> val < curr -> val){
-                prev = prev -> next;
+        ListNode dummy(-5001, head);
+        ListNode* ptr1 = head;
+        while (ptr1->next) {
+            if (ptr1->val < ptr1->next->val) {
+                ptr1 = ptr1->next;
+                continue;
             }
 
-            ListNode* nextTemp = curr -> next;
+            ListNode* ptr2 = &dummy;
+            while (ptr2->next->val < ptr1->next->val) {
+                ptr2 = ptr2->next;
+            }
 
-            curr -> next = prev -> next;
-            prev -> next = curr;
-
-            curr = nextTemp;
-
+            ListNode* temp = ptr1->next;
+            ptr1->next = temp->next;
+            temp->next = ptr2->next;
+            ptr2->next = temp;
         }
         return dummy.next;
     }
