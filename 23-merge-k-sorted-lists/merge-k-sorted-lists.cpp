@@ -9,8 +9,7 @@
  * };
  */
 class Solution {
-public:
-ListNode* mergeTwoLists(ListNode* list1, ListNode* list2) {
+    ListNode* mergeTwoLists(ListNode* list1, ListNode* list2) {
         ListNode dummy(0);
         ListNode* tail = &dummy;
         while(list1 && list2){
@@ -27,13 +26,18 @@ ListNode* mergeTwoLists(ListNode* list1, ListNode* list2) {
         if(list2) tail->next = list2;
         return dummy.next;
     }
+public:
     ListNode* mergeKLists(vector<ListNode*>& lists) {
     if (lists.empty()) return nullptr;
-    
-    ListNode* res = lists[0];
-    for (int i = 1; i < lists.size(); i++) {
-        res = mergeTwoLists(res, lists[i]);
-    }
-    return res;
+    return mergeKListsHelper(lists, 0, lists.size() - 1);
 }
+
+ListNode* mergeKListsHelper(vector<ListNode*>& lists, int left, int right) {
+    if (left == right) return lists[left];
+    int mid = (left + right) / 2;
+    ListNode* l1 = mergeKListsHelper(lists, left, mid);
+    ListNode* l2 = mergeKListsHelper(lists, mid + 1, right);
+    return mergeTwoLists(l1, l2);
+}
+
 };
