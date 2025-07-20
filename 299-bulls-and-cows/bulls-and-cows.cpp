@@ -1,24 +1,22 @@
 class Solution {
 public:
     string getHint(string secret, string guess) {
-        int bulls = 0, cows = 0;
-        unordered_map<char, int> count; 
-        
-        for (int i = 0; i < secret.size(); ++i) {
-            char s = secret[i];
-            char g = guess[i];
-            
-            if (s == g) {
-                bulls++;
-            } else {
-                if (count[s] < 0) cows++;  
-                if (count[g] > 0) cows++;  
-                
-                count[s]++;  
-                count[g]--;  
-            }
-        }
+         int bulls = 0, cows = 0;
+    vector<int> sCount(10, 0), gCount(10, 0);
 
-        return to_string(bulls) + "A" + to_string(cows) + "B";
+    for (int i = 0; i < secret.size(); ++i) {
+        if (secret[i] == guess[i]) {
+            bulls++;
+        } else {
+            sCount[secret[i] - '0']++;
+            gCount[guess[i] - '0']++;
+        }
+    }
+
+    for (int i = 0; i < 10; ++i) {
+        cows += min(sCount[i], gCount[i]);
+    }
+
+    return to_string(bulls) + "A" + to_string(cows) + "B";
     }
 };
