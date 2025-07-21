@@ -1,18 +1,13 @@
 class Solution {
 public:
     string makeFancyString(string s) {
-        string Fancy = "";
-        int count = 1;
-        for(int i = 0; i < s.size(); i++){
-            if(i > 0 && s[i] == s[i - 1]){
-                count++;
-            }else{
-                count = 1;
+        string result = "";
+        for (int i = 0; i < s.length(); i++) {
+            if (i >= 2 && s[i] == s[i - 1] && s[i] == s[i - 2]) {
+                continue; // skip 3rd duplicate
             }
-            if(count <=2 ){
-                Fancy += s[i];
-            }
+            result.push_back(s[i]); // correctly append character
         }
-        return Fancy;
+        return result;
     }
 };
