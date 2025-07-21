@@ -1,13 +1,13 @@
 class Solution {
 public:
     string makeFancyString(string s) {
-        string result = "";
-        for (int i = 0; i < s.length(); i++) {
-            if (i >= 2 && s[i] == s[i - 1] && s[i] == s[i - 2]) {
-                continue; // skip 3rd duplicate
-            }
-            result.push_back(s[i]); // correctly append character
+        int idx = 0;
+
+        for(int i = 0; i < s.size(); i++){
+            if(idx < 2 || s[idx - 1] != s[idx - 2] || s[idx - 1] != s[i])
+                s[idx++] = s[i];
         }
-        return result;
+
+        return s.substr(0, idx);
     }
 };
