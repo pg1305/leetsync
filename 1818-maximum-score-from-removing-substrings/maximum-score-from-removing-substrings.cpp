@@ -1,42 +1,38 @@
 class Solution {
 public:
-    int maximumGain(string s, int x, int y) {
-        if (x > y)
-            return removePairs(s, 'a', 'b', x, y);
-        else
-            return removePairs(s, 'b', 'a', y, x);
-    }
-
-    int removePairs(string s, char first, char second, int highScore, int lowScore) {
-        stack<char> st;
-        int score = 0;
-
-        // First pass: remove higher-value pair (first+second)
-        string intermediate;
-        for (char c : s) {
-            if (!st.empty() && st.top() == first && c == second) {
-                st.pop();
-                score += highScore;
-            } else {
-                st.push(c);
-            }
-        }
-
-        while (!st.empty()) {
-            intermediate += st.top();
+    string countp(string s, char p, char q, int x, long long  &ans) {
+    stack<char> st;
+    for (char c : s) {
+        if (!st.empty() && st.top() == p && c == q) {
             st.pop();
+            ans += x;
+        } else {
+            st.push(c);
         }
-        reverse(intermediate.begin(), intermediate.end());
+    }
+    string sol(st.size(), ' ');
+    for (int i = st.size() - 1; i >= 0; --i) {
+        sol[i] = st.top();
+        st.pop();
+    }
+    return sol;
+}
+    int maximumGain(string s, int x, int y) {
+        long long ans=0;
+        int great=max(x,y);
+        if(great==x)
+        {
+              string rem=countp(s,'a','b',x,ans);
+             
+              string end=countp(rem,'b','a',y,ans);
 
-        for (char c : intermediate) {
-            if (!st.empty() && st.top() == second && c == first) {
-                st.pop();
-                score += lowScore;
-            } else {
-                st.push(c);
-            }
         }
+        else
+        {
+             string rem=countp(s,'b','a',y,ans);
+              rem=countp(rem,'a','b',x,ans);
 
-        return score;
+        }
+     return ans;
     }
 };
