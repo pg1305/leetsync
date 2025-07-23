@@ -1,38 +1,44 @@
 class Solution {
 public:
-    string countp(string s, char p, char q, int x, long long  &ans) {
-    stack<char> st;
-    for (char c : s) {
-        if (!st.empty() && st.top() == p && c == q) {
-            st.pop();
-            ans += x;
-        } else {
-            st.push(c);
-        }
-    }
-    string sol(st.size(), ' ');
-    for (int i = st.size() - 1; i >= 0; --i) {
-        sol[i] = st.top();
-        st.pop();
-    }
-    return sol;
-}
     int maximumGain(string s, int x, int y) {
-        long long ans=0;
-        int great=max(x,y);
-        if(great==x)
-        {
-              string rem=countp(s,'a','b',x,ans);
-             
-              string end=countp(rem,'b','a',y,ans);
+        int res = 0;
+        string top, bot;
+        int top_score, bot_score;
 
+        if (y > x) {
+            top = "ba";
+            top_score = y;
+            bot = "ab";
+            bot_score = x;
+        } else {
+            top = "ab";
+            top_score = x;
+            bot = "ba";
+            bot_score = y;
         }
-        else
-        {
-             string rem=countp(s,'b','a',y,ans);
-              rem=countp(rem,'a','b',x,ans);
 
+        // Removing first top substrings cause they give more points
+        vector<char> stack;
+        for (char ch : s) {  // Changed 'char' to 'ch'
+            if (ch == top[1] && !stack.empty() && stack.back() == top[0]) {
+                res += top_score;
+                stack.pop_back();
+            } else {
+                stack.push_back(ch);
+            }
         }
-     return ans;
+
+        // Removing bot substrings cause they give less or equal amount of scores
+        vector<char> new_stack;
+        for (char ch : stack) {  // Changed 'char' to 'ch'
+            if (ch == bot[1] && !new_stack.empty() && new_stack.back() == bot[0]) {
+                res += bot_score;
+                new_stack.pop_back();
+            } else {
+                new_stack.push_back(ch);
+            }
+        }
+
+        return res;
     }
 };
