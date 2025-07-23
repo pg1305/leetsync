@@ -1,10 +1,10 @@
 class Solution {
 public:
+// sort the array first and the make the pair add only even index.
     int arrayPairSum(vector<int>& nums) {
-        int sum = 0;
-        sort(nums.begin(), nums.end());
-        int n = nums.size();
-        for(int i = 0; i < n; i+=2){
+        sort(nums.begin(),nums.end());
+        int sum =0;
+        for(int i=0;i<nums.size();i+=2){
             sum += nums[i];
         }
         return sum;
