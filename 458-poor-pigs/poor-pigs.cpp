@@ -1,11 +1,9 @@
 class Solution {
 public:
     int poorPigs(int buckets, int minutesToDie, int minutesToTest) {
-        int tests = minutesToTest / minutesToDie;
-        int pigs = 0;
-        while(pow(tests + 1, pigs) < buckets){
-            pigs++;
-        }
-        return pigs;
+        int cnt = 0;
+        int attempt = minutesToTest / minutesToDie;
+        while(pow((attempt + 1), cnt) < buckets) cnt++;
+        return cnt;
     }
 };
