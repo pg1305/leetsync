@@ -1,37 +1,39 @@
 class Solution {
 public:
     string fractionAddition(string expression) {
-        int num = 0;
-        int denom = 1;
+        int numerator = 0, denominator = 1;
+        int i = 0, n = expression.size();
 
-        vector<string> nums;
-        int i = 0;
-        if (expression[0] != '-') expression = '+' + expression;
-        while (i < expression.size()) {
-            int j = i + 1;
-            while (j < expression.size() && expression[j] != '+' &&
-                   expression[j] != '-') {
-                j++;
+        while (i < n) {
+            int sign = 1;
+            if (expression[i] == '+' || expression[i] == '-') {
+                if (expression[i] == '-') sign = -1;
+                i++;
             }
-            nums.push_back(expression.substr(i, j - i));
-            i = j;
+
+            int num = 0;
+            while (i < n && isdigit(expression[i])) {
+                num = num * 10 + (expression[i] - '0');
+                i++;
+            }
+            num *= sign;
+
+            i++;
+
+            int den = 0;
+            while (i < n && isdigit(expression[i])) {
+                den = den * 10 + (expression[i] - '0');
+                i++;
+            }
+
+            numerator = numerator * den + num * denominator;
+            denominator *= den;
+
+            int gcdVal = gcd(abs(numerator), denominator);
+            numerator /= gcdVal;
+            denominator /= gcdVal;
         }
 
-        for (int i = 0; i < nums.size(); ++i) {
-            size_t pos = nums[i].find('/');
-            int currNum = stoi(nums[i].substr(1, pos - 1));
-            if (nums[i][0] == '-') currNum = -currNum;
-            int currDenom = stoi(nums[i].substr(pos + 1));
-
-            num = num * currDenom + currNum * denom;
-            denom = denom * currDenom;
-
-            int gcd = abs(__gcd(num, denom));
-
-            num /= gcd;
-            denom /= gcd;
-        }
-
-        return to_string(num) + "/" + to_string(denom);
+        return to_string(numerator) + "/" + to_string(denominator);
     }
 };
