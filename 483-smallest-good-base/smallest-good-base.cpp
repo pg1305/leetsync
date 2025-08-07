@@ -1,33 +1,34 @@
+#include <string>
+#include <cmath>
+using namespace std;
+
 class Solution {
 public:
-typedef unsigned long long ull;
-    string smallestGoodBase(string n_str) {
-    ull n = stoull(n_str);
-    
-    for (int m = (int)(log2(n)); m >= 1; --m) {
-        ull left = 2, right = pow(n, 1.0 / m) + 1;
+    string smallestGoodBase(string n) {
+        long long num = stoll(n);
+        // max length of n in base 2 minus 1
+        int max_m = (int)(log2(num));
 
-        while (left <= right) {
-            ull k = left + (right - left) / 2;
-            ull sum = 1, curr = 1;
-
-            for (int i = 1; i <= m; ++i) {
-                curr *= k;
-                sum += curr;
-                if (sum > n) break;
+        for (int m = max_m; m >= 1; --m) {
+            long long left = 2, right = pow(num, 1.0/m) + 1;
+            while (left <= right) {
+                long long mid = left + (right - left) / 2;
+                long long s = 1, cur = 1;
+                // Compute sum of geometric series s = 1 + mid + mid^2 + ... + mid^m
+                for (int i = 0; i < m; ++i) {
+                    if (s > num) break; // prevent overflow
+                    cur *= mid;
+                    s += cur;
+                }
+                if (s == num)
+                    return to_string(mid);
+                if (s < num)
+                    left = mid + 1;
+                else
+                    right = mid - 1;
             }
-
-            if (sum == n)
-                return to_string(k);
-            else if (sum < n)
-                left = k + 1;
-            else
-                right = k - 1;
         }
+
+        return to_string(num - 1);
     }
-
-    // Fallback: base n-1 always works for 2 digits "11"
-    return to_string(n - 1);
-}
-
 };
