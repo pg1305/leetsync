@@ -1,40 +1,48 @@
-
 class Solution {
 public:
-    bool isValidSudoku(vector<vector<char>>& board, int row, int col, char num) {
-        for (int i = 0; i < 9; i++) {
-            if (board[row][i] == num || board[i][col] == num) return false;
+    bool isSafe(vector<vector<char>>& board,int row,int col,int dig){
+        //horizontally (in row)
+        for(int j=0;j<9;j++){
+            if(board[row][j]==dig) return false;
         }
-        int startRow = (row / 3) * 3, startCol = (col / 3) * 3;
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                if (board[startRow + i][startCol + j] == num) return false;
+        //vertically (in col)
+        for(int i=0;i<9;i++){
+            if(board[i][col]==dig) return false;
+        }
+        //in grid
+        int sr=(int)(row/3)*3;
+        int sc=(int)(col/3)*3;
+        for(int i=sr;i<sr+3;i++){
+            for(int j=sc;j<sc+3;j++){
+                if(board[i][j]==dig) return false;
             }
         }
         return true;
     }
-    bool solve(vector<vector<char>>& board) {
-        for (int i = 0; i < 9; i++) {
-            for (int j = 0; j < 9; j++) {
-                if (board[i][j] == '.') {  
-                    for (char num = '1'; num <= '9'; num++) {
-                        if (isValidSudoku(board, i, j, num)) {
-                            board[i][j] = num;  // Place the number
 
-                            if (solve(board)) return true; // If solved, return true
+    bool helper(vector<vector<char>>& board,int row,int col){
+        if(row==9) return true;
+        int nextRow=row;
+        int nextCol=col+1;
+        if(nextCol==9){
+            nextRow=row+1;
+            nextCol=0;
+        }
+        if(board[row][col]!='.'){
+           return helper(board,nextRow,nextCol);
+            
+        }
 
-                            board[i][j] = '.'; // Backtrack
-                        }
-                    }
-                    return false; // If no valid number is found, return false
-                }
+        for(char dig='1';dig<='9';dig++){
+            if(isSafe(board,row,col,dig)){
+                board[row][col]=dig;
+               if( helper(board,nextRow,nextCol)) return true;
+                board[row][col]='.';
             }
         }
-        return true; // If all cells are filled, return true
+        return false;
     }
-
     void solveSudoku(vector<vector<char>>& board) {
-        solve(board); 
+        helper(board,0,0);
     }
 };
-
