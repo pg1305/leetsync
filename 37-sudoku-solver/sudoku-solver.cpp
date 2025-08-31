@@ -34,7 +34,7 @@ public:
     }
 
     void solveSudoku(vector<vector<char>>& board) {
-        solve(board); // Start solving
+        solve(board); 
     }
 };
 
