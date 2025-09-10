@@ -2,44 +2,36 @@ class Solution {
 public:
     int minimumTeachings(int n, vector<vector<int>>& languages, vector<vector<int>>& friendships) {
         int m = languages.size();
-        
-        vector<unordered_set<int>> knows(m + 1);
+        vector<vector<char>> matrix(m + 1, vector<char>(n + 1, false));
         for (int i = 0; i < m; i++) {
-            for (int lang : languages[i]) {
-                knows[i + 1].insert(lang); 
+            for (const auto& language : languages[i]) {
+                matrix[i + 1][language] = true;
             }
         }
-        
-        unordered_set<int> problematicUsers;
-        for (auto &f : friendships) {
-            int u = f[0], v = f[1];
-            bool canCommunicate = false;
-            for (int lang : knows[u]) {
-                if (knows[v].count(lang)) {
-                    canCommunicate = true;
+        vector<char> learn(m + 1, false);
+        for (const auto& friendship : friendships) {
+            bool can_communicate = false;
+            for (int i = 1; i <= n; i++) {
+                if (matrix[friendship[0]][i] && matrix[friendship[1]][i]) {
+                    can_communicate = true;
                     break;
                 }
             }
-            if (!canCommunicate) {
-                problematicUsers.insert(u);
-                problematicUsers.insert(v);
+            if (!can_communicate) {
+                learn[friendship[0]] = true;
+                learn[friendship[1]] = true;
             }
         }
-        
-        if (problematicUsers.empty()) return 0;
-        
-        map<int, int> langCount;
-        for (int user : problematicUsers) {
-            for (int lang : knows[user]) {
-                langCount[lang]++;
+        int minimum_learnings = INT_MAX;
+        for (int i = 1; i <= n; i++) {
+            int learnings = 0;
+            for (int j = 1; j <= m; j++) {
+                if (learn[j] && !matrix[j][i]) {
+                    learnings++;
+                }
             }
+            minimum_learnings = min(minimum_learnings, learnings);
         }
-        
-        int maxKnown = 0;
-        for (auto &p : langCount) {
-            maxKnown = max(maxKnown, p.second);
-        }
-        
-        return (int)problematicUsers.size() - maxKnown;
+        return minimum_learnings;
     }
 };
