@@ -1,18 +1,19 @@
 class Solution {
-    bool isVowel(char c){
-        return c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u';
-    }
 public:
     int maxFreqSum(string s) {
-        int maxV = 0, maxC = 0;
-        unordered_map<char, int> freq;
-        for(char c:s){
-            freq[c]++;
+        int count_v=0;
+        int count_c=0;
+        unordered_map<char,int>mp;
+         for(int i=0;i<s.size();i++){
+            if(s[i]=='a'||s[i]=='e'||s[i]=='i'||s[i]=='o'||s[i]=='u'){
+                mp[s[i]]++;
+                count_v=max(count_v,mp[s[i]]);
+            }
+            else{
+            mp[s[i]]++;
+                count_c=max(count_c,mp[s[i]]);
+            }
         }
-        for(char c = 'a'; c <= 'z'; c++){
-            if(isVowel(c)) maxV = max(maxV, freq[c]);
-            else maxC = max(maxC, freq[c]);
-        }
-        return maxV + maxC;
+        return count_v+count_c;
     }
 };
