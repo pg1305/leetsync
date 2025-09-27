@@ -1,10 +1,4 @@
 class Solution {
-    double dist(vector<int> &pt1, vector<int> &pt2){
-        return sqrt((pt1[0] - pt2[0])*(pt1[0] - pt2[0]) + (pt1[1] - pt2[1])*(pt1[1] - pt2[1]));
-    }
-    bool validTri(double a , double b, double c){
-        return a + b > c && b + c > a && a + c > b;
-    }
 public:
     double largestTriangleArea(vector<vector<int>>& p) {
         double area = 0;
