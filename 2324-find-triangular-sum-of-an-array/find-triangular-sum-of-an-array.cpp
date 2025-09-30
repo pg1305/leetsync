@@ -8,7 +8,6 @@ public:
                 nums[j]%=10;
             }
         }
-
         return nums[0];
         
     }
