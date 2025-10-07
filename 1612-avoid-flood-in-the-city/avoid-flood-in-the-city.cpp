@@ -1,25 +1,34 @@
 class Solution {
 public:
     vector<int> avoidFlood(vector<int>& rains) {
-        vector<int> res(rains.size(), 1);
-        set<int> st;
-        unordered_map<int, int> mp;
-        for (int i = 0; i < rains.size(); ++i) {
-            if (rains[i] == 0) {
-                st.insert(i);
-            } else {
-                res[i] = -1;
-                if (mp.count(rains[i])) {
-                    auto it = st.lower_bound(mp[rains[i]]);
-                    if (it == st.end()) {
-                        return {};
+        int n=rains.size();
+        unordered_map<int,int>lake;
+        for(int i=0;i<n;i++){
+            if(rains[i]){
+                if(lake.count(rains[i])){
+                    int pIdx=lake[rains[i]];
+                    int find=0;
+                    for(int j=pIdx;j<i;j++){
+                        if(!rains[j]){
+                            rains[j]=rains[i];
+                            find=1;
+                            break;
+                        }
                     }
-                    res[*it] = rains[i];
-                    st.erase(it);
+                    if(find==0) return {};
+                    lake[rains[i]]=i;
+                    rains[i]=-1;
+
                 }
-                mp[rains[i]] = i;
+                else{
+                    lake[rains[i]]=i;
+                    rains[i]=-1;
+                }
             }
         }
-        return res;
+        for(int i=0;i<n;i++){
+            if(rains[i]==0) rains[i]=1;
+        }  
+        return rains;
     }
 };
