@@ -1,30 +1,30 @@
 class Solution {
 public:
     vector<int> pivotArray(vector<int>& nums, int pivot) {
-        // vector<int> less, great, equal;
-        // for(int num:nums){
-        //     if(num < pivot) less.push_back(num);
-        //     else if(num == pivot) equal.push_back(num);
-        //     else great.push_back(num);
-        // }
-        // vector<int> res;
-        // res.reserve(nums.size());
-        // res.insert(res.end(), less.begin(), less.end());
-        // res.insert(res.end(), equal.begin(), equal.end());
-        // res.insert(res.end(), great.begin(), great.end());
-        // return res;
-        vector<int> res(nums.size());
-        int less = 0, equal = 0;
-        for(int num:nums){
-            if(num < pivot) less++;
-            else if(num == pivot) equal++;
+        
+        std::vector<int> G,L;
+        G.reserve(nums.size());
+        L.reserve(nums.size());
+        int NPivot=0;
+        for(int i=0;i<nums.size();i++)
+        {
+            if(nums[i]<pivot)
+            {
+                L.emplace_back(nums[i]);
+            }
+            else if(nums[i] == pivot){
+                NPivot++;
+            }
+            else{
+                G.emplace_back(nums[i]);
+            }
         }
-        int i1 = 0, i2 = less, i3 = less + equal;
-        for(int num:nums){
-            if(num < pivot) res[i1++] = num;
-            else if(num == pivot) res[i2++] = num;
-            else res[i3++] = num;
+
+        while(NPivot>0){
+            L.emplace_back(pivot);
+            NPivot--;
         }
-        return res;
+        L.insert(L.end(),std::make_move_iterator(G.begin()),std::make_move_iterator(G.end()) );
+        return std::move(L);
     }
 };
