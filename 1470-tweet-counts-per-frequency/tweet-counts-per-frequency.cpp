@@ -1,8 +1,8 @@
 class TweetCounts {
 public:
-unordered_map<string, vector<int>> mp;
+    unordered_map<string,vector<int>>mp;
     TweetCounts() {
-        
+        mp.clear();
     }
     
     void recordTweet(string tweetName, int time) {
@@ -10,21 +10,20 @@ unordered_map<string, vector<int>> mp;
     }
     
     vector<int> getTweetCountsPerFrequency(string freq, string tweetName, int startTime, int endTime) {
-        int size = 0;
-        if(freq == "minute") size = 60;
-        else if(freq == "hour") size = 3600;
-        else if(freq == "day") size = 86400;
-
-        vector<int> &times = mp[tweetName];
-        sort(times.begin(), times.end());
-        int portions = (endTime - startTime)/size + 1;
-        vector<int> res(portions, 0);
-        for (int t : times) {
-            if (t < startTime || t > endTime) continue;
-            int idx = (t - startTime) / size;
-            res[idx]++;
+        if(freq=="minute"){
+            vector<int>ans((endTime-startTime)/60+1,0);
+            for(auto it:mp[tweetName])if(it>=startTime && it<=endTime)ans[(it-startTime)/60]++;
+            return ans;
+        }else if(freq=="hour"){
+            vector<int>ans((endTime-startTime)/3600+1,0);
+            for(auto it:mp[tweetName])if(it>=startTime && it<=endTime)ans[(it-startTime)/3600]++;
+            return ans;
         }
-        return res; 
+        else {
+            vector<int>ans((endTime-startTime)/(24*3600)+1,0);
+            for(auto it:mp[tweetName])if(it>=startTime && it<=endTime)ans[(it-startTime)/(24*3600)]++;
+            return ans;
+        }
     }
 };
 
