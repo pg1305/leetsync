@@ -1,52 +1,50 @@
 class Solution {
 public:
-    bool canAchieve(long long mid, vector<int>& stations, int r, long long k) {
-    int n = stations.size();
-    vector<long long> power(n), diff(n + 1, 0);
-
-    // Calculate initial power using sliding window
-    long long curr = 0;
-    for (int i = 0; i < n; i++) {
-        curr += stations[i];
-        if (i - r - 1 >= 0) curr -= stations[i - r - 1];
-        power[i] = curr;
-        if (i + r + 1 < n) curr += (stations[i + r + 1]);
-    }
-
-    // Reset and recompute correctly
-    vector<long long> prefix(n + 1, 0);
-    for (int i = 0; i < n; i++) prefix[i + 1] = prefix[i] + stations[i];
-    for (int i = 0; i < n; i++) {
-        int left = max(0, i - r), right = min(n - 1, i + r);
-        power[i] = prefix[right + 1] - prefix[left];
-    }
-
-    long long added = 0;
-    for (int i = 0; i < n; i++) {
-        if (i > 0) added += diff[i];
-        if (power[i] + added < mid) {
-            long long need = mid - (power[i] + added);
-            if (need > k) return false;
-            k -= need;
-            added += need;
-            int end = min(n, i + 2 * r + 1);
-            if (end < n) diff[end] -= need;
+    long long maxPower(vector<int>& stations, int r, int k) {
+        long long left = 0;
+        // The answer = `right`, when `r = n`, all value of stations are the same!
+        long long right = accumulate(stations.begin(), stations.end(), 0LL) + k;
+        long long ans = 0;
+        while (left <= right) {
+            long long mid = (left + right) / 2;
+            if (isGood(stations, r, mid, k)) {
+                ans = mid; // This is the maximum possible minimum power so far
+                left = mid + 1; // Search for a larger value in the right side
+            } else {
+                right = mid - 1; // Decrease minPowerRequired to need fewer additional power stations
+            }
         }
+        return ans;
     }
-    return true;
-}
 
-long long maxPower(vector<int>& stations, int r, int k) {
-    long long low = 0, high = 1e18, ans = 0;
-    while (low <= high) {
-        long long mid = (low + high) / 2;
-        if (canAchieve(mid, stations, r, k)) {
-            ans = mid;
-            low = mid + 1;
-        } else {
-            high = mid - 1;
+    bool isGood(vector<int>& stations, int r, long long minPowerRequired, int additionalStations) {
+        int n = stations.size();
+        // init windowPower to store power of 0th city (minus stations[r])
+        long long windowPower = accumulate(stations.begin(), stations.begin()+r, 0LL);
+        vector<int> additions(n, 0);
+        for (int i = 0; i < n; i++) {
+            if (i + r < n) {
+                // now, windowPower stores sum of power stations from [i-r..i+r],
+                // it also means it's the power of city `ith`
+                windowPower += stations[i + r];
+            }
+            if (windowPower < minPowerRequired) {
+                long long needed = minPowerRequired - windowPower;
+                if (needed > additionalStations) {
+                    // Not enough additional stations to plant
+                    return false;
+                }
+                // Plant the additional stations on the farthest city in the range
+                // to cover as many cities as possible
+                additions[min(n - 1, i + r)] += needed;
+                windowPower = minPowerRequired;
+                additionalStations -= needed;
+            }
+            if (i - r >= 0) {
+                // out of window range
+                windowPower -= stations[i - r] + additions[i - r];
+            }
         }
+        return true;
     }
-    return ans;
-}
 };
