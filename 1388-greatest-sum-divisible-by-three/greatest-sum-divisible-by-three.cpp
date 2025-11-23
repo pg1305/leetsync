@@ -1,30 +1,18 @@
 class Solution {
+    int n;
+    vector<vector<int>> dp;
 public:
     int maxSumDivThree(vector<int>& nums) {
-        sort(nums.begin(), nums.end());
-        int sum = accumulate(nums.begin(), nums.end(), 0);
-
-        if (sum % 3 == 0) return sum;
-
-        int mod1a = 1e9, mod1b = 1e9; 
-        int mod2a = 1e9, mod2b = 1e9; 
-
-        for (int x : nums) {
-            if (x % 3 == 1) {
-                if (x < mod1a) { mod1b = mod1a; mod1a = x; }
-                else if (x < mod1b) mod1b = x;
-            } 
-            else if (x % 3 == 2) {
-                if (x < mod2a) { mod2b = mod2a; mod2a = x; }
-                else if (x < mod2b) mod2b = x;
+        int n = nums.size();
+        int dp[n + 1][3];
+        dp[0][0] = 1; dp[0][1] = dp[0][2] = 0;
+        for (int i = 1; i <= n; ++i) {
+            for (int m = 0; m < 3; ++m) {
+                int skip = dp[i - 1][m], pick = 0, x = dp[i - 1][(m + nums[i - 1]) % 3];
+                if (x) pick = nums[i - 1] + x;
+                dp[i][m] = max(pick, skip);
             }
         }
-
-        if (sum % 3 == 1) {
-            return max(sum - mod1a, sum - (mod2a + mod2b));
-        } 
-        else { 
-            return max(sum - mod2a, sum - (mod1a + mod1b));
-        }
+        return dp[n][0] - 1;
     }
 };
