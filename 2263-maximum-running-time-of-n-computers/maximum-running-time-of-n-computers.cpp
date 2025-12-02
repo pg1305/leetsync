@@ -1,14 +1,20 @@
 class Solution {
+private:
+    long long powerAvailable(const std::vector<int>& batteries, long long mid) {
+        if(mid == 0) return 0;
+        long long totalPower = 0;
+        for(int b : batteries) 
+            totalPower += min(1LL*b, mid);
+        
+        return totalPower;
+    }
 public:
-    long long maxRunTime(int n, vector<int>& arr) {
-        sort(arr.begin(), arr.end());
-        long long total = accumulate(arr.begin(), arr.end(), 0LL);
-
-        for (int i = arr.size() - 1; i >= 0; i--) {
-            if (arr[i] <= total / n) break;
-            total -= arr[i];
-            n--;
+    long long maxRunTime(int n, vector<int>& batteries) {
+        long long start = 0, end = accumulate(batteries.begin(), batteries.end(), 0LL);
+        while(start <= end) {
+            long long mid = start + (end-start) / 2;
+            (powerAvailable(batteries, mid) >= n*mid) ? start = mid+1 : end = mid-1;
         }
-        return total / n;
+        return end;
     }
 };
