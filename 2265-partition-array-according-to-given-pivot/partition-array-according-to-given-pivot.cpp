@@ -1,22 +1,20 @@
 class Solution {
 public:
     vector<int> pivotArray(vector<int>& nums, int pivot) {
-        vector<int> G,L;
-        G.reserve(nums.size());
-        L.reserve(nums.size());
-        int NPivot=0;
-        for(int i=0;i<nums.size();i++)
+        vector<int>ans ;
+        for(auto x : nums)
         {
-            if(nums[i]<pivot) L.emplace_back(nums[i]);
-            else if(nums[i] == pivot) NPivot++;
-            else G.emplace_back(nums[i]);
-            
+            if(x < pivot)
+            ans.push_back(x);
         }
-        while(NPivot>0){
-            L.emplace_back(pivot);
-            NPivot--;
+        for(auto x : nums)
+        {
+            if(x == pivot) ans.push_back(x);
         }
-        L.insert(L.end(),make_move_iterator(G.begin()),make_move_iterator(G.end()) );
-        return move(L);
+        for(auto x : nums)
+        {
+            if(x >pivot) ans.push_back(x);
+        }
+        return ans;
     }
 };
