@@ -1,41 +1,39 @@
 class Solution {
 public:
+    int m, n;
+
+    bool dfs(vector<vector<int>>& grid, int r, int c) {
+        if (r < 0 || c < 0 || r >= m || c >= n)
+            return false;
+
+        if (grid[r][c] == 1)
+            return true;
+
+        grid[r][c] = 1; // Mark as visited
+
+        bool up = dfs(grid, r - 1, c);
+        bool down = dfs(grid, r + 1, c);
+        bool left = dfs(grid, r, c - 1);
+        bool right = dfs(grid, r, c + 1);
+
+        return up && down && left && right;
+    }
+
     int closedIsland(vector<vector<int>>& grid) {
-        int m = grid.size();
-        int n = grid[0].size();
+        m = grid.size();
+        n = grid[0].size();
+
         int count = 0;
-        vector<vector<bool>> visit(m, vector<bool>(n));
+
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
-                if (grid[i][j] == 0 && !visit[i][j] && dfs(i, j, m, n, grid, visit)) {
-                    count++;
+                if (grid[i][j] == 0) {
+                    if (dfs(grid, i, j))
+                        count++;
                 }
             }
         }
+
         return count;
-    }
-
-    bool dfs(int x, int y, int m, int n, vector<vector<int>>& grid, vector<vector<bool>>& visit) {
-        if (x < 0 || x >= m || y < 0 || y >= n) {
-            return false;
-        }
-        if (grid[x][y] == 1 || visit[x][y]) {
-            return true;
-        }
-
-        visit[x][y] = true;
-        bool isClosed = true;
-        vector<int> dirx {0, 1, 0, -1};
-        vector<int> diry {-1, 0, 1, 0};
-
-        for (int i = 0; i < 4; i++) {
-            int r = x + dirx[i];
-            int c = y + diry[i];
-            if (!dfs(r, c, m, n, grid, visit)) {
-                isClosed = false;
-            }
-        }
-
-        return isClosed;
     }
 };
